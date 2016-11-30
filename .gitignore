@@ -1,0 +1,16 @@
+# Dependency directories
+node_modules
+jspm_packages
+#build apps
+dist
+# Logs
+logs
+*.log
+npm-debug.log*
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+# Optional npm cache directory
+.npm
