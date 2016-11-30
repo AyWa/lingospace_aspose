@@ -4,12 +4,14 @@
   "description": "Module to use Aspose Total Cloud",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Marc Hurabielle",
   "license": "ISC",
   "dependencies": {
     "asposewordscloud": "^1.0.1",
+    "assert": "^1.4.1",
     "body-parser": "^1.15.2",
     "express": "^4.14.0"
   }
