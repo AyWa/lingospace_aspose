@@ -16,7 +16,7 @@ get API:
 post API:   
 '/api/upload'   
 put API:   
-'/replace-sentences'   
+'/api/replace-sentences'   
 #CODE
 #MODULE
 asposewordscloud
