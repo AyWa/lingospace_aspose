@@ -13,7 +13,7 @@ in the root folder:
 #TEST
 to test   
 `npm start`   
-`node test.js`
+`node test.js`   
 or   
 `npm test`
 #API
@@ -26,4 +26,5 @@ put API:
 #CODE
 #MODULE
 multer -> middleware to get file for express   
+request && assert  to test    
 asposewordscloud
