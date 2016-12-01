@@ -31,22 +31,26 @@ router.get('/document/:name',function(req,res){
 router.put('/upload',function(req,res){
   //req:(name, storage, etc options)
   //res {origin_file_url: \'http://uploaded-file-url.origin.ppt\', file_url: \'http://uploaded-file-url.ppt\'}
+  storageApi.PutCreate(name, null, null, file= data_path + name , function(responseMessage) {
+    assert.equal(responseMessage.status, 'OK');
+  });
 });
-router.post('/upload',function(req,res){
+/*router.post('/upload',function(req,res){
   //req:(name, storage, etc options)
   //res {origin_file_url: \'http://uploaded-file-url.origin.ppt\', file_url: \'http://uploaded-file-url.ppt\'}
-});
+});*/
 router.put('/replace-sentences',function(req,res){
   //req:(file_url, sentences [{origin_sentence: \'some sentence\', replace_sentence: \'replaced sentence\'}])
   //res {"meta": {"status": 200, "message": "Ok"}}
   var name=req.body.file_url;
   var replaceTextRequestBody = {
-		'OldValue' : req.body.sentences.origin_sentence,
-		'NewValue' : req.body.sentences.replace_sentence
-		};
+	  'OldValue' : req.body.sentences.origin_sentence,
+	  'NewValue' : req.body.sentences.replace_sentence
+	};
   wordsApi.PostReplaceText(name, null, null, null, replaceTextRequestBody, function(responseMessage) {
     assert.equal(responseMessage.status, 'OK');
     console.log("Document has been updated successfully");
+    res.json({success: true})
   });
 });
 
