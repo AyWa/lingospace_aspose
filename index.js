@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname,'dist'))); //name of dist
 
 
-var routes = require('./routes/index');
+var routes = require('./routes/api');
 app.use('/api',routes);
 
 app.get('*', function(req, res) {

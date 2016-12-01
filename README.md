@@ -10,6 +10,13 @@ in the root folder:
 #Start the APP  
 in the root folder:  
 `npm start`  
+#API
+get API:   
+'/api/document/:name'   
+post API:   
+'/api/upload'   
+put API:   
+'/replace-sentences'   
 #CODE
 #MODULE
 asposewordscloud
