@@ -11,9 +11,8 @@ in the root folder:
 in the root folder:  
 `npm start`  
 #TEST
-to test
-`npm start`
-+   
+to test   
+`npm start`   
 `node test.js`
 or   
 `npm test`
