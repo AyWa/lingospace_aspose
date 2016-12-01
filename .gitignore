@@ -2,7 +2,7 @@
 node_modules
 jspm_packages
 #build apps
-dist
+
 # Logs
 logs
 *.log
@@ -14,3 +14,4 @@ pids
 *.pid.lock
 # Optional npm cache directory
 .npm
+*.doc

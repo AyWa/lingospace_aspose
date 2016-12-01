@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run start | node test.js"
   },
   "author": "Marc Hurabielle",
   "license": "ISC",
@@ -14,6 +14,7 @@
     "assert": "^1.4.1",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
-    "multer": "^1.2.0"
+    "multer": "^1.2.0",
+    "request": "^2.79.0"
   }
 }

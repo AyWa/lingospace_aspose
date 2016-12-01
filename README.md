@@ -10,6 +10,12 @@ in the root folder:
 #Start the APP  
 in the root folder:  
 `npm start`  
+#TEST
+`npm start`
++   
+`node test.js`
+or   
+`npm test`
 #API
 get API:   
 '/api/document/:name'   
@@ -19,4 +25,5 @@ put API:
 '/api/replace-sentences'   
 #CODE
 #MODULE
+multer -> middleware to get file for express   
 asposewordscloud
