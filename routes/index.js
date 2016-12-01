@@ -9,9 +9,24 @@ var WordsApi    = require("asposewordscloud");
 var config      = require('../config/asposes');
 var data_path   = '../public_data/';
 
+try{
+  //Instantiate Aspose Storage API SDK
+  var storageApi = new StorageApi(config);
+  //Instantiate Aspose Words API SDK
+  var wordsApi = new WordsApi(config);
+}catch(e){
+  console.log("exception in Instantiate");
+  console.log(e);
+  process.exit(-1);
+}
 
 router.get('/document/:name',function(req,res){
   //res "result": [\'text\', \'http://localhost:port/images/some-image.png\', \'other text\']
+  var name=req.params.name;
+  wordsApi.GetDocumentTextItems(name, null, null, function(responseMessage) {
+  	assert.equal(responseMessage.status, 'OK');
+    res.json(responseMessage);
+	});
 });
 router.put('/upload',function(req,res){
   //req:(name, storage, etc options)
@@ -24,44 +39,17 @@ router.post('/upload',function(req,res){
 router.put('/replace-sentences',function(req,res){
   //req:(file_url, sentences [{origin_sentence: \'some sentence\', replace_sentence: \'replaced sentence\'}])
   //res {"meta": {"status": 200, "message": "Ok"}}
-});
-try {
-  //Instantiate Aspose.Storage API SDK
-  var storageApi = new StorageApi(config);
-  //Instantiate Aspose.Words API SDK
-  var wordsApi = new WordsApi(config);
-
-  //set input file name
-  var filename = "Sample";
-  var name = filename + ".doc";
-  var format = "pdf";
-
-  wordsApi.GetDocumentTextItems(name,null,null,function(responseMessage){
+  var name=req.body.file_url;
+  var replaceTextRequestBody = {
+		'OldValue' : req.body.sentences.origin_sentence,
+		'NewValue' : req.body.sentences.replace_sentence
+		};
+  wordsApi.PostReplaceText(name, null, null, null, replaceTextRequestBody, function(responseMessage) {
     assert.equal(responseMessage.status, 'OK');
-    responseMessage.body.TextItems.List.forEach(function(textItem) {
-      console.log(textItem.Text);
-    });
-    console.log('************');
-    console.log(responseMessage.body.TextItems.List);
+    console.log("Document has been updated successfully");
   });
-  //upload file to aspose cloud storage
-  /*
-  storageApi.PutCreate(name, null, null, file= data_path + name , function(responseMessage) {
-      assert.equal(responseMessage.status, 'OK');
-      //invoke Aspose.Words Cloud SDK API to convert words document to required format
-      wordsApi.GetDocumentWithFormat(name, format, null, null, null, function(responseMessage) {
-            assert.equal(responseMessage.status, 'OK');
-            //download output document from response
-            var outfilename = filename + '.' + format;
-            var writeStream = fs.createWriteStream('./public_data/' + outfilename);
-            writeStream.write(responseMessage.body);
-          });
-      });
-  */
-  }catch (e) {
-    console.log("exception in example");
-    console.log(e);
-}
+});
+
 module.exports = router;
 /*
 [ { Text: 'Created in the cloud with Aspose.Words for Cloud. http://www.aspose.com/cloud/word-api.aspx',
