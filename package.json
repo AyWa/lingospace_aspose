@@ -10,6 +10,8 @@
   "author": "Marc Hurabielle",
   "license": "ISC",
   "dependencies": {
+    "asposepdfcloud": "^1.0.1",
+    "asposeslidescloud": "^1.0.0",
     "asposewordscloud": "^1.0.1",
     "assert": "^1.4.1",
     "body-parser": "^1.15.2",

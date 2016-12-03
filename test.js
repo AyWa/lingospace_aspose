@@ -20,7 +20,7 @@ function testGet(){
 function testput(){
   let path = '/api/replace-sentences';
   request.put(host + path)
-    .json({file_url: "Sample.doc", sentences:{origin_sentence:"hey",replace_sentence:"yo"}})
+    .json({file_url: "Sample.doc", sentences:{origin_sentence:"Created in the cloud",replace_sentence:"yoyo l'asticot"}})
     .on('response',(response)=>{
       assert.equal(response.statusCode, 200);
       console.log("Put Modify document success: TEST OK");
