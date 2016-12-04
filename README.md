@@ -19,9 +19,11 @@ or
 #API
 get API:   
 '/api/document/:name'   
+for download:   
+'/api/download/:name'   
 post API:   
 '/api/upload'   
-put API:   
+post API:   
 '/api/replace-sentences'   
 #CODE
 #MODULE

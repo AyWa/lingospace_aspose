@@ -10,6 +10,7 @@ const config      = require('../config/asposes');
 const data_path   = __dirname + '/../public_data/';
 //multer is a middleware for handling multipart/form-data upload files
 const multer      = require('multer');
+const fs          = require('fs');
 const crypto      = require('crypto');
 const path        = require('path');
 const wordsRegex  = /doc|docx/;
@@ -56,34 +57,58 @@ router.get('/document/:name',(req,res) => {
   let name=req.params.name;
   if ( wordsRegex.test(path.extname(name))) {
     wordsApi.GetDocumentTextItems(name, null, null, (responseMessage) => {
-      if(responseMessage.code===200) res.json(responseMessage);
-      else res.status(responseMessage.code).send(responseMessage.body.Message);
+      if(responseMessage.code===200) res.json(responseMessage.body.TextItems);
+      else res.status(responseMessage.code).send(responseMessage);
     });
   }else if (slideRegex.test(path.extname(name))) {
     slidesApi.GetSlidesPresentationTextItems(name, null, null, null, (responseMessage) => {
-      if(responseMessage.code===200) res.json(responseMessage);
-      else res.status(responseMessage.code).send(responseMessage.body.Message);
+      if(responseMessage.code===200) res.json(responseMessage.body.TextItems);
+      else res.status(responseMessage.code).send(responseMessage);
     });
   }else if (pdfRegex.test(path.extname(name))) {
     pdfApi.GetTextItems(name, null, null, null, (responseMessage) => {
-      if(responseMessage.code===200) res.json(responseMessage);
-      else res.status(responseMessage.code).send(responseMessage.body.Message);
+      if(responseMessage.code===200) res.json(responseMessage.body.TextItems);
+      else res.status(responseMessage.code).send(responseMessage);
     });
   }
-  else res.status(responseMessage.code).send("not matching extension");
+  else res.status(404).send("not matching extension");
 });
+router.get('/download/:name',(req,res) => {
+  let name=req.params.name;
+  storageApi.GetDownload(name, null, null, (responseMessage) => {
+    fs.writeFile(data_path + 'tmp' + name,responseMessage.body,()=>res.download(data_path + 'tmp' + name,null,(err)=>{
+      if(err) console.log(err);
+      else fs.unlink(data_path + 'tmp' + name,(err)=>{
+        console.log(err);
+      });
+    }));
+
+  })
+})
 //req:(name, storage, etc options)
 //res {origin_file_url: \'http://uploaded-file-url.origin.ppt\', file_url: \'http://uploaded-file-url.ppt\'}
 router.post('/upload',upload.single('userDoc'),(req,res) => {
   //PUT THE FILENAME IN THE BDD OF THE USERS
+  console.log('the file name is ' + req.file.filename);
+  console.log('the original file name is ' + 'original'+req.file.filename);
   storageApi.PutCreate(req.file.filename, null, null, file= data_path + req.file.filename , (responseMessage) => {
-    if(responseMessage.code===200) res.json({success: true});
-    else res.status(responseMessage.code).send(responseMessage.body.Message);
+    if(responseMessage.code===200){
+      storageApi.PutCreate('original'+req.file.filename, null, null, file= data_path + req.file.filename , (responseMessage) => {
+         if(responseMessage.code===200){
+           fs.unlink(data_path + req.file.filename,(err)=>{
+             console.log(err);
+           });
+           res.json({success: true});
+         }
+         else res.status(responseMessage.code).send(responseMessage);
+      })
+    }
+    else res.status(responseMessage.code).send(responseMessage);
   });
 });
 //req:(file_url, sentences [{origin_sentence: \'some sentence\', replace_sentence: \'replaced sentence\'}])
 //res {"meta": {"status": 200, "message": "Ok"}}
-router.put('/replace-sentences',(req,res) => {
+router.post('/replace-sentences',(req,res) => {
   //test is field existing
   if(req.body.file_url && req.body.sentences && req.body.sentences.origin_sentence && req.body.sentences.replace_sentence) {
     let name=req.body.file_url;
@@ -91,10 +116,22 @@ router.put('/replace-sentences',(req,res) => {
       'OldValue' : req.body.sentences.origin_sentence,
       'NewValue' : req.body.sentences.replace_sentence
     };
-    wordsApi.PostReplaceText(name, null, null, null, replaceTextRequestBody, (responseMessage) =>  {
-      if(responseMessage.code===200) res.status(responseMessage.code).send("Document has been updated successfully");
-      else res.status(responseMessage.code).send(responseMessage.body.Message);
-    });
+    if ( wordsRegex.test(path.extname(name))) {
+      wordsApi.PostReplaceText(name, null, null, null, replaceTextRequestBody, (responseMessage) =>  {
+        if(responseMessage.code===200) res.status(responseMessage.code).send("Document has been updated successfully");
+        else res.status(responseMessage.code).send(responseMessage);
+      });
+    }else if (slideRegex.test(path.extname(name))) {
+      slidesApi.PostSlidesPresentationReplaceText(name, replaceTextRequestBody.OldValue, replaceTextRequestBody.NewValue, true, null, null, (responseMessage) => {
+        if(responseMessage.code===200) res.status(responseMessage.code).send("Document has been updated successfully");
+        else res.status(responseMessage.code).send(responseMessage);
+      });
+    }else if (pdfRegex.test(path.extname(name))) {
+      pdfApi.PostDocumentReplaceText(name, null, null, replaceTextRequestBody, (responseMessage) => {
+        if(responseMessage.code===200) res.status(responseMessage.code).send("Document has been updated successfully");
+        else res.status(responseMessage.code).send(responseMessage);
+      });
+    }else res.status(404).send("not matching extension");
   }
   else res.status(404).send("missing field");
 });
