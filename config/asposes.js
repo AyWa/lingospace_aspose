@@ -14,5 +14,6 @@ const pdfApi = new PdfApi({appSid,apiKey});
 module.exports = {
   wordsApi,
   slidesApi,
-  pdfApi
+  pdfApi,
+  storageApi
 };

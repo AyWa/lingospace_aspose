@@ -4,15 +4,7 @@ var path        = require('path');
 var bodyParser  = require('body-parser');
 //port server
 var port 	      = process.env.PORT || 4200; //you can change port of server
-/*
-todo:
-user upload
-get the file on nodejs
-send the file to the Asposes
-get the text and image
-get the modified text and replace in the document(copyof)
-download the newfile
-*/
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname,'dist'))); //name of dist

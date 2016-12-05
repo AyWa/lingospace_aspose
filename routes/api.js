@@ -1,15 +1,15 @@
-const express                     = require('express');
-const router                      = express.Router();
-const path                        = require('path');
-const data_path                   = __dirname + '/../public_data/';
+const express                                 = require('express');
+const router                                  = express.Router();
+const path                                    = require('path');
+const data_path                               = __dirname + '/../public_data/';
 //multer is a middleware for handling multipart/form-data upload files
-const {upload}                    = require('../config/multer_config');
+const {upload}                                = require('../config/multer_config');
 // get the config of asposes:apikey etc
-const {wordsApi,slidesApi,pdfApi} = require('../config/asposes');
-const fs                          = require('fs');
-const wordsRegex                  = /doc|docx/;
-const slideRegex                  = /ppt|pptx/;
-const pdfRegex                    = /pdf/;
+const {wordsApi,slidesApi,pdfApi,storageApi}  = require('../config/asposes');
+const fs                                      = require('fs');
+const wordsRegex                              = /doc|docx/;
+const slideRegex                              = /ppt|pptx/;
+const pdfRegex                                = /pdf/;
 //exemple: `http://localhost:4200/api/document/d041b0836d7804a4b40cb137a5bdfddftest1.pptx`
 //get all the text from the document
 //we get the extention thanks to path.extname(name) and test it to the regex.
