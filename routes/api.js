@@ -38,7 +38,7 @@ router.get('/document/:name',(req,res) => {
 //original(append original): `http://localhost:4200/api/download/originald041b0836d7804a4b40cb137a5bdfddftest1.pptx`
 //modified (normal name): `http://localhost:4200/api/download/d041b0836d7804a4b40cb137a5bdfddftest1.pptx`
 router.get('/download/:name',(req,res) => {
-  let name=req.params.name;
+  let name = req.params.name;
   //first we download the file from the api
   storageApi.GetDownload(name, null, null, (responseMessage) => {
     //then we save it
@@ -47,11 +47,50 @@ router.get('/download/:name',(req,res) => {
       if(err) console.log(err);
       //deleting files
       else fs.unlink(data_path + 'tmp' + name,(err)=>{
-        console.log(err);
+        if(err) console.log('err delete file in public_data');
       });
     }));
-
   })
+})
+//download append files original + modified in the same doc
+//exemple localhost:4200/api/download/append/0252de03877bb27df92276a2787ee3abmarctest.docx
+//don't put original before the file name
+router.get('/download/append/:name', (req,res) => {
+  const name = `original${req.params.name}`; //the file we will copy
+  const tmpname= `append${req.params.name}`; //the name of the final file
+  if(req.params.name.substring(0,8) === 'original') res.status(404).send('use without original in file name');
+  const documentEntryList =  {
+    'DocumentEntries' : [{
+      'Href' : `${req.params.name}`,
+      'ImportFormatMode' : 'KeepSourceFormatting'
+    }
+  ]};
+  if ( wordsRegex.test(path.extname(name))) {
+    //we copy the original file
+    storageApi.PutCopy(name, tmpname, null, null, null, null,(responseMessage) => {
+      if(responseMessage.code===200){
+        //we append to the copy the modified doc
+        wordsApi.PostAppendDocument(tmpname, null, null, null, documentEntryList, (responseMessage) => {
+          if(responseMessage.code===200){
+            //we download the append doc
+            storageApi.GetDownload(tmpname, null, null, (responseMessage) => {
+              //we send the doc then delete it from cloud + public data
+              fs.writeFile(data_path + 'append' + name,responseMessage.body,()=>res.download(data_path + 'append' + name,null,(err)=>{
+                storageApi.DeleteFile(tmpname, null, null, (responseMessage) => {
+                  if(responseMessage.code===200) console.log('deleted');
+                  else console.log('error not deleted file '+tmpname);
+                })
+                if(err) console.log(err);
+                else fs.unlink(data_path + 'append' + name,(err)=>{
+                  if(err) console.log('err delete file in public_data');
+                });
+              }));
+            })
+          }else res.status(responseMessage.code).send(responseMessage);
+        });
+      } else res.status(responseMessage.code).send(responseMessage);
+    })
+  } else res.status(404).send("not matching extension: only pdf or word doc");
 })
 //we upload 2 times the file we get from the middleware multer.
 //(one for original one for modified)

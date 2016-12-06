@@ -4,7 +4,7 @@ const host  = "http://localhost:4200";
 const assert = require('assert');
 
 function testGet(){
-  let path = '/api/document/7078e430c47147299b8dbf37e0df7d8ftest1.docx';
+  let path = '/api/document/0252de03877bb27df92276a2787ee3abmarctest.docx';
   request.get(host + path)
     .on('response',function(response){
       assert.equal(response.statusCode, 200);
@@ -20,7 +20,7 @@ function testGet(){
 function testpost(){
   let path = '/api/replace-sentences';
   request.post(host + path)
-    .json({file_url: "7078e430c47147299b8dbf37e0df7d8ftest1.docx", sentences:{origin_sentence:"Created in the cloud",replace_sentence:"yoyo l'asticot"}})
+    .json({file_url: "0252de03877bb27df92276a2787ee3abmarctest.docx", sentences:{origin_sentence:"Created in the cloud",replace_sentence:"ㅋㅋㅋㅋ"}})
     .on('response',(response)=>{
       assert.equal(response.statusCode, 200);
       console.log("POST Modify document success: TEST OK");
