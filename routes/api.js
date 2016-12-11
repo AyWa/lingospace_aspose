@@ -140,7 +140,7 @@ router.post('/upload',upload.single('userDoc'),(req,res) => {
            fs.unlink(data_path + req.file.filename,(err)=>{
              console.log(err);
            });
-           res.json({success: true});
+           res.json({success: true,filename:req.file.filename});
          }
          else res.status(responseMessage.code).send(responseMessage);
       })

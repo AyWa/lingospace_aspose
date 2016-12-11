@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "npm run start | node test.js"
+    "test": "npm run start | node ./test/test.js"
   },
   "author": "Marc Hurabielle",
   "license": "ISC",
