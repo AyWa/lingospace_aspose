@@ -163,13 +163,17 @@ router.post('/replace-sentences',(req,res) => {
   //test is field existing
   if(req.body.file_url && req.body.sentences && req.body.sentences.origin_sentence && req.body.sentences.replace_sentence) {
     let name=req.body.file_url;
-    let replaceTextRequestBody = {
-      'OldValue' : req.body.sentences.origin_sentence,
-      'NewValue' : req.body.sentences.replace_sentence
-    };
-    console.log(replaceTextRequestBody);
+    const formData = {
+  	  "OldValue": "ㅋㅋㅋㅋㅋㅋㅋㅋ",
+  	  "NewValue": "Coucou",
+  	  "IsMatchCase": true,
+  	  "IsMatchWholeWord": true,
+  	  "IsOldValueRegex": true
+    }
+
+    console.log(formData);
     if ( wordsRegex.test(path.extname(name))) {
-      wordsApi.PostReplaceText(name, null, null, null, replaceTextRequestBody, (responseMessage) =>  {
+      wordsApi.PostReplaceText(name, null, null, null, formData, (responseMessage) =>  {
         if(responseMessage.code===200) res.status(responseMessage.code).send("Document has been updated successfully");
         else res.status(responseMessage.code).send(responseMessage);
       });

@@ -64,8 +64,24 @@ function testpostUpload(){
   })
 }
 //just to wait the loading of the server
-setTimeout(()=>{
-  testGet();
-  testpostUpload();
-  testpost();
-}, 5000);
+setTimeout( () => {
+  const formData = {
+	  "OldValue": "ㅋㅋㅋㅋㅋㅋㅋㅋ",
+	  "NewValue": "Coucou",
+	  "IsMatchCase": true,
+	  "IsMatchWholeWord": true,
+	  "IsOldValueRegex": true
+  }
+  const url='http://api.aspose.cloud/v1.1/words/b729b47c35e6120afc63392fff3d15c2TestAspose.docx/replaceText?appsid=3cfe4a6c-2116-4665-806c-c72ebba2a0f8&signature=2prQmK0jjqSGdYrFnG4Vq1EeG9s';
+  request.post(url)
+  .json(formData)
+  .on('response',function(response,b){
+    console.log(response.statusCode);
+  }).on('data', function(data) {
+    // decompressed data as it is received
+    console.log('decoded chunk: ' + data)
+  })
+  //testGet();
+  //testpostUpload();
+  //testpost();
+}, 5);
