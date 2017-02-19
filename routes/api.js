@@ -6,6 +6,8 @@ const data_path                               = __dirname + '/../public_data/';
 const {upload}                                = require('../config/multer_config');
 // get the config of asposes:apikey etc
 const {wordsApi,slidesApi,pdfApi,storageApi}  = require('../config/asposes');
+//our personal aspose api
+const myWordsApi                              = require('../api/words');
 const fs                                      = require('fs');
 const wordsRegex                              = /doc|docx/;
 const slideRegex                              = /ppt|pptx/;
@@ -34,7 +36,7 @@ router.get('/document/:name',(req,res) => {
   }
   else res.status(404).send("not matching extension");
 });
-
+//delete file
 router.delete('/document/:name',(req,res) => {
   let name=req.params.name;
   storageApi.DeleteFile(name, null, null,  (responseMessage) => {
@@ -164,19 +166,21 @@ router.post('/replace-sentences',(req,res) => {
   if(req.body.file_url && req.body.sentences && req.body.sentences.origin_sentence && req.body.sentences.replace_sentence) {
     let name=req.body.file_url;
     const formData = {
-  	  "OldValue": "ㅋㅋㅋㅋㅋㅋㅋㅋ",
-  	  "NewValue": "Coucou",
+  	  "OldValue": req.body.sentences.origin_sentence,
+  	  "NewValue": req.body.sentences.replace_sentence,
   	  "IsMatchCase": true,
   	  "IsMatchWholeWord": true,
   	  "IsOldValueRegex": true
     }
-
     console.log(formData);
     if ( wordsRegex.test(path.extname(name))) {
-      wordsApi.PostReplaceText(name, null, null, null, formData, (responseMessage) =>  {
-        if(responseMessage.code===200) res.status(responseMessage.code).send("Document has been updated successfully");
-        else res.status(responseMessage.code).send(responseMessage);
-      });
+      myWordsApi.replaceSentences(formData, name)
+        .then( responseM => {
+          console.log(responseM);
+          console.log(responseM.code);
+          if(responseM.statusCode===200) res.status(responseM.statusCode).send("Document has been updated successfully");
+          else res.status(responseM.statusCode).send(responseM);
+        })
     }else if (slideRegex.test(path.extname(name))) {
       slidesApi.PostSlidesPresentationReplaceText(name, replaceTextRequestBody.OldValue, replaceTextRequestBody.NewValue, true, null, null, (responseMessage) => {
         if(responseMessage.code===200) res.status(responseMessage.code).send("Document has been updated successfully");
