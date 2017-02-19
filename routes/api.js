@@ -8,6 +8,7 @@ const {upload}                                = require('../config/multer_config
 const {wordsApi,slidesApi,pdfApi,storageApi}  = require('../config/asposes');
 //our personal aspose api
 const myWordsApi                              = require('../api/words');
+const myPdfApi                                = require('../api/pdf');
 const fs                                      = require('fs');
 const wordsRegex                              = /doc|docx/;
 const slideRegex                              = /ppt|pptx/;
@@ -167,30 +168,25 @@ router.post('/replace-sentences',(req,res) => {
     let name=req.body.file_url;
     const formData = {
   	  "OldValue": req.body.sentences.origin_sentence,
-  	  "NewValue": req.body.sentences.replace_sentence,
-  	  "IsMatchCase": true,
-  	  "IsMatchWholeWord": true,
-  	  "IsOldValueRegex": true
+  	  "NewValue": req.body.sentences.replace_sentence
     }
-    console.log(formData);
     if ( wordsRegex.test(path.extname(name))) {
       myWordsApi.replaceSentences(formData, name)
         .then( responseM => {
-          console.log(responseM);
-          console.log(responseM.code);
           if(responseM.statusCode===200) res.status(responseM.statusCode).send("Document has been updated successfully");
           else res.status(responseM.statusCode).send(responseM);
         })
     }else if (slideRegex.test(path.extname(name))) {
-      slidesApi.PostSlidesPresentationReplaceText(name, replaceTextRequestBody.OldValue, replaceTextRequestBody.NewValue, true, null, null, (responseMessage) => {
+      slidesApi.PostSlidesPresentationReplaceText(name, req.body.sentences.origin_sentence, req.body.sentences.replace_sentence, true, null, null, (responseMessage) => {
         if(responseMessage.code===200) res.status(responseMessage.code).send("Document has been updated successfully");
         else res.status(responseMessage.code).send(responseMessage);
       });
     }else if (pdfRegex.test(path.extname(name))) {
-      pdfApi.PostDocumentReplaceText(name, null, null, replaceTextRequestBody, (responseMessage) => {
-        if(responseMessage.code===200) res.status(responseMessage.code).send("Document has been updated successfully");
-        else res.status(responseMessage.code).send(responseMessage);
-      });
+      myPdfApi.replaceSentences(formData, name)
+        .then( responseM => {
+          if(responseM.statusCode===200) res.status(responseM.statusCode).send("Document has been updated successfully");
+          else res.status(responseM.statusCode).send(responseM);
+        })
     }else res.status(404).send("not matching extension");
   }
   else res.status(404).send("missing field");
