@@ -2,37 +2,8 @@ const assert  = require('assert');
 const request = require('request');
 const fs      = require('fs');
 const host    = "http://localhost:4200";
+const {doc_text, doc_text_modify} = require('./test_text')
 
-let doc_text = [
-  {"Text":"Bonjour","link":null},
-  {"Text":"","link":null},
-  {"Text":"\tㅋㅋㅋㅋ","link":null},
-  {"Text":"","link":null},
-  {"Text":"","link":null},
-  {"Text":"","link":null},
-  {"Text":"\t\t\t안돼","link":null},
-  {"Text":"","link":null},
-  {"Text":"","link":null},
-  {"Text":"\t\t\t\t\t고마워요, 잘자요","link":null},
-  {"Text":"","link":null},
-  {"Text":"","link":null},
-  {"Text":"End of the test. :)","link":null}
-];
-let doc_text_modify = [
-  { "Text":'Bonjour',"link": null},
-  { "Text":'',"link": null},
-  { "Text":'\tㅋㅋㅋㅋ',"link": null},
-  { "Text":'',"link": null},
-  { "Text":'',"link": null},
-  { "Text":'',"link": null},
-  { "Text":'\t\t\t안돼',"link": null},
-  { "Text":'',"link": null},
-  { "Text":'',"link": null},
-  { "Text":'\t\t\t\t\tmerci beaucoup, bonne nuit',"link": null},
-  { "Text":'',"link": null},
-  { "Text":'',"link": null},
-  { "Text":'End of the test. :)',"link": null}
-];
 // test cases WordsAPI
 //the upload test and delete test are done in before after
 describe('LingoSpace Aspose API', function(){
