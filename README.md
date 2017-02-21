@@ -10,10 +10,9 @@ in the root folder:
 in the root folder:  
 `npm start`  
 #TEST
-to test   
-`npm start`   
-`node test.js`   
-or   
+launch the server first with      
+`npm start`    
+then   
 `npm test`
 #API
 get API:   
