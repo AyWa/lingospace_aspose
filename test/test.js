@@ -69,11 +69,26 @@ describe('LingoSpace Aspose API', function(){
         })
       })
     })
-    it('download test', function(){
-      assert.equal(false,true);
+    it('download test', function(done){
+      this.timeout(20000);
+      const path = `${host}/api/download/original${UploadDocName}`;
+      request.get(path,(err, httpResponse, body) =>{
+        let testDOC = fs.readFileSync(__dirname + '/TestDOC.docx');
+        assert.equal(testDOC.toString(), body.toString(),'doc are not same !');
+        assert.equal(httpResponse.statusCode, 200);
+        done();
+      })
     })
-    it('download append test', function(){
-      assert.equal(false,true);
+    it('download append test', function(done){
+      this.timeout(20000);
+      const path = `${host}/api/download/append/${UploadDocName}`;
+      request.get(path,(err, httpResponse, body) =>{
+        //let testDOC = fs.readFileSync(__dirname + '/AppendDOC.docx');
+        console.log('to do better test');
+        //assert.equal(testDOC.toString(), body.toString(),'doc are not same !');
+        assert.equal(httpResponse.statusCode, 200);
+        done();
+      })
     })
   })
   describe('PDF API', function(){
@@ -127,11 +142,26 @@ describe('LingoSpace Aspose API', function(){
         done();
       })
     })
-    it('download test', function(){
-      assert.equal(false,true);
+    it('download test', function(done){
+      this.timeout(20000);
+      const path = `${host}/api/download/original${UploadDocName}`;
+      request.get(path,(err, httpResponse, body) =>{
+        let testPDF = fs.readFileSync(__dirname + '/TestPDF.pdf');
+        assert.equal(testPDF.toString(), body.toString(),'pdf are not same !');
+        assert.equal(httpResponse.statusCode, 200);
+        done();
+      })
     })
-    it('download append test', function(){
-      assert.equal(false,true);
+    it('download append test', function(done){
+      this.timeout(20000);
+      const path = `${host}/api/download/append/${UploadDocName}`;
+      request.get(path,(err, httpResponse, body) =>{
+        //let testPDF = fs.readFileSync(__dirname + '/AppendPDF.pdf');
+        console.log('to do better test');
+        //assert.equal(testPDF.toString(), body.toString(),'pdf are not same !');
+        assert.equal(httpResponse.statusCode, 200);
+        done();
+      })
     })
   })
   describe('SLIDES API', function(){
